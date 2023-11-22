@@ -15,27 +15,28 @@ class LinkedList:
             pointer.nextNode = Node(element)
         else:
             self.head = Node(element)
+        return f'Node {element} adicionado'
 
     def remove(self, element):
-        if self.head.data == element:
+        if self.head == None:
+            return f'Node {element} não existe' 
+
+        elif self.head.data == element:
             self.head = self.head.nextNode
-        else:
-            pointer = self.head
-            while(pointer.nextNode is not None): #quando removermos ele virará None
-                if pointer.data == element:
-                    pointer.nextNode = pointer.nextNode.nextNode
-                    break
-                pointer = pointer.nextNode
-            return 'Node {element} não existe'
+            return f'Node {element} foi removido'
     
-    def index(self, elem):
-        pointer = self.head
-        i = 0
-        while(pointer):
-            if pointer.data == elem:
-                return i
-            pointer = pointer.nextNode
-            i = i+1
+        else:
+            antecessor = self.head
+            pointer = self.head.nextNode
+            while(pointer):
+                if pointer.data == element:
+                    antecessor.nextNode = pointer.nextNode
+                    pointer.nextNode = None                
+                    return f'Node {element} foi removido'
+                antecessor = pointer
+                pointer = pointer.nextNode
+            return f'Node {element} não existe'
+
 
     def __repr__(self):
         r = ""
@@ -43,42 +44,74 @@ class LinkedList:
         while(pointer):
             r = r + str(pointer.data) + "->"
             pointer = pointer.nextNode
-        return r
+        mapa = f'mapa:{r[:-2]}'
+        return mapa
+
 
     def empurrar(self, element):
         pointer = self.head
-        if pointer.data == element:
-            if pointer.nextNode.nextNode is not None:
+        if pointer is not None:
+            if pointer.nextNode is not None and pointer.data == element:
                 segundo = pointer.nextNode
-                terceiro = pointer.nextNode.nextNode
-                saveData.nextNode = segundo
-                pointer.nextNode = terceiro
-                segundo.nextNode = pointer
-                
+                pointer.data = segundo.data
+                segundo.data = element
+                return f'Node {element} empurrado'
+            else:
+                while(pointer.data is not element and pointer.nextNode is not None):
+                    pointer = pointer.nextNode
+                if pointer.nextNode is not None and pointer.data == element:
+                    segundo = pointer.nextNode 
+                    pointer.data = segundo.data
+                    segundo.data = element
+                    return f'Node {element} empurrado'
+                elif pointer.nextNode is None and pointer.data == element:
+                    return f'Não existe Node depois de {element}'
+            return f'Node {element} não existe'
+        else:
+            return f'Node {element} não existe'
             
+    def voltar(self, element):
+        pointer = self.head
+        if pointer is not None:
+            if pointer.data == element:
+                return f'Não existe node antes de {pointer.data}'
+            else:
+                antecessor = pointer
+                pointer = pointer.nextNode
+                while(pointer.data is not element and pointer.nextNode is not None):
+                    antecessor = pointer
+                    pointer = pointer.nextNode
+                if pointer.data == element:
+                    pointer.data = antecessor.data
+                    antecessor.data = element
+                    return f'Node {element} puxado'
+                return f'Node {element} não existe'
+        else:
+            return f'Node {element} não existe'
 
-listaa = LinkedList()
+lista = LinkedList()
 fim = False
 
 while(not fim):
     entradas = input().split(':')
     elemento = entradas[0]
     comando = entradas[-1]
-    if comando == 're':
-        listaa.remove(elemento)
+    if comando == 'remova-me!' or comando == 're':
+        print(lista.remove(elemento))
 
-    elif comando == 'add':
-        listaa.append(elemento)
+    elif comando == 'adicione-me!' or comando == 'add':
+        print(lista.append(elemento))
+        
+    elif comando == 'empurre-me!' or comando == 'em':
+        print(lista.empurrar(elemento))
 
-    elif comando == 'em':
-        listaa.empurrar(elemento)
-
+    elif comando == 'puxe-me!' or comando == 'vol':
+        print(lista.voltar(elemento))
 
     elif comando == 'fim!':
         fim = True
+        print(repr(lista))
         break
 
     elif comando == 'pri':
-        print(listaa.__repr__)
-
-
+        print(repr(lista))
