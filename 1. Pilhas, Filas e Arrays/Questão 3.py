@@ -8,7 +8,7 @@ class Node:
 class DoublyLinkedList:
     head = None
     tail = None
-
+    
     def append(self, data):
         new_node = Node(data, None, None)
         if self.head is None:
@@ -34,6 +34,23 @@ class DoublyLinkedList:
                         current_node.next_node.prev_node = current_node.prev_node
             current_node = current_node.next_node
 
+    def interagiu(self, input):
+        words = input.split(' ')
+        action = words[1]
+        print(f'action: {action} ============================')
+        name = words[-1]
+
+        if action == 'deixou':
+            self.remove(name)
+        elif action == 'fechou':
+            self.display()
+        else:
+            if not self.search(name):
+                self.append(name)
+            else:
+                self.remove(name)
+                self.append(name)
+
     def display(self):
         current_node = self.head
         nodes = []
@@ -48,22 +65,27 @@ class DoublyLinkedList:
 
         return nodes[0]
     
+    def search(self, data):
+        current_node = self.head
+        if current_node:
+            while current_node == None:
+                if current_node == data:
+                    return True
+                current_node = current_node.next_node
+        return False
+
 
 lista = DoublyLinkedList()
 
 fim = False
 
 while(not fim):
-    entradas = input().split(':')
+    entradas = input()
     elemento = entradas[0]
     comando = entradas[-1]
-    if comando == 're':
-        print(lista.remove(elemento))
-
-    elif comando == 'add':
-        print(lista.append(elemento))
-
-    elif comando == 'fi':
+    words = entradas.split(' ')
+    if words[1] == 'fechou':
         fim = True
-        print(lista.display())
-        break
+    
+    print(lista.interagiu(entradas))
+

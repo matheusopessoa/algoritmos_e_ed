@@ -74,7 +74,7 @@ class LinkedList:
         pointer = self.head
         if pointer is not None:
             if pointer.data == element:
-                return f'Não existe node antes de {pointer.data}'
+                return f'Não existe Node antes de {pointer.data}'
             else:
                 antecessor = pointer
                 pointer = pointer.nextNode
@@ -96,16 +96,16 @@ while(not fim):
     entradas = input().split(':')
     elemento = entradas[0]
     comando = entradas[-1]
-    if comando == 'remova-me!' or comando == 're':
+    if comando == 'remova-me!':
         print(lista.remove(elemento))
 
-    elif comando == 'adicione-me!' or comando == 'add':
+    elif comando == 'adicione-me!':
         print(lista.append(elemento))
         
-    elif comando == 'empurre-me!' or comando == 'em':
+    elif comando == 'empurre-me!':
         print(lista.empurrar(elemento))
 
-    elif comando == 'puxe-me!' or comando == 'vol':
+    elif comando == 'puxe-me!':
         print(lista.voltar(elemento))
 
     elif comando == 'fim!':
@@ -113,5 +113,3 @@ while(not fim):
         print(repr(lista))
         break
 
-    elif comando == 'pri':
-        print(repr(lista))
