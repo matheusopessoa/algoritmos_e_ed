@@ -1,91 +1,84 @@
 class Node:
-    def __init__(self, data, prev_node, next_node):
+    def __init__(self, data):
         self.data = data
-        self.prev_node = prev_node
-        self.next_node = next_node
-
+        self.next_node = None
+        self.prev_node = None
 
 class DoublyLinkedList:
-    head = None
-    tail = None
-    
+    def __init__(self):
+        self.head = None
+        self.tail = None
+
+    def is_empty(self):
+        return self.head is None
+
     def append(self, data):
-        new_node = Node(data, None, None)
-        if self.head is None:
+        new_node = Node(data)
+        if self.is_empty():
             self.head = new_node
             self.tail = new_node
         else:
             new_node.prev_node = self.tail
-            new_node.next_node = None
             self.tail.next_node = new_node
             self.tail = new_node
 
     def remove(self, data):
-        current_node = self.head
-        while current_node is not None:
-            if current_node.data == data:
-                if current_node.prev_node is None:
-                    self.head = current_node.next_node
-                    if current_node.next_node is not None:
-                        current_node.next_node.prev_node = None
+        current = self.head
+
+        while current:
+            if current.data == data:
+                if current.prev_node:
+                    current.prev_node.next_node = current.next_node
                 else:
-                    current_node.prev_node.next_node = current_node.next_node
-                    if current_node.next_node is not None:
-                        current_node.next_node.prev_node = current_node.prev_node
-            current_node = current_node.next_node
+                    self.head = current.next_node
+
+                if current.next_node:
+                    current.next_node.prev_node = current.prev_node
+                else:
+                    self.tail = current.prev_node
+                return
+            current = current.next_node
+
+    def display_backward(self):
+        current = self.tail
+        while current:
+            if current.data is not None:
+                print(current.data, end="\n")
+            current = current.prev_node
+
+
+    def search(self, data):
+        current_node = self.head
+        if current_node:
+            while current_node is not None:
+                if current_node.data == data:
+                    return True
+                current_node = current_node.next_node
+        return False
 
     def interagiu(self, input):
         words = input.split(' ')
         action = words[1]
-        print(f'action: {action} ============================')
         name = words[-1]
 
         if action == 'deixou':
             self.remove(name)
         elif action == 'fechou':
-            self.display()
+            return
         else:
-            if not self.search(name):
+            if self.search(name) == False:
                 self.append(name)
             else:
                 self.remove(name)
                 self.append(name)
-
-    def display(self):
-        current_node = self.head
-        nodes = []
-        while current_node is not None:
-            current_data = str(current_node.data)
-            nodes.append(current_data)
-            current_node = current_node.next_node
-
-        while len(nodes) > 1:
-            print(nodes[-1])
-            nodes.remove(nodes[-1])
-
-        return nodes[0]
-    
-    def search(self, data):
-        current_node = self.head
-        if current_node:
-            while current_node == None:
-                if current_node == data:
-                    return True
-                current_node = current_node.next_node
-        return False
-
-
-lista = DoublyLinkedList()
-
 fim = False
-
-while(not fim):
+lista = DoublyLinkedList()
+while (not fim):
     entradas = input()
     elemento = entradas[0]
     comando = entradas[-1]
     words = entradas.split(' ')
     if words[1] == 'fechou':
         fim = True
-    
-    print(lista.interagiu(entradas))
-
+    lista.interagiu(entradas)
+lista.display_backward()
