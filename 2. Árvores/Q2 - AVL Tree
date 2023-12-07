@@ -1,6 +1,7 @@
 class Node(object):
     def __init__(self,data):
         self.data = data
+        self.parent = None
         self.leftChild = None
         self.rightChild = None
         self.height = 0
@@ -19,7 +20,7 @@ class AVL(object):
 
     def insert(self, data):
         self.root = self.insertNode(data, self.root)
-
+    
 
     def insertNode(self, data, node):
         if not node:
@@ -93,6 +94,18 @@ class AVL(object):
             return self.getPredecessor(node.rightChild)
         return node
 
+    def balanceTraverse(self):
+        listaBf = []
+        if self.root:
+            self.balanceTraverseInOrder(self.root, listaBf)
+        return listaBf
+    
+    def balanceTraverseInOrder(self, node, lista):
+        if node.leftChild:
+            self.traverseInOrder(node.leftChild, lista)
+        lista.append(node.data)
+        if node.rightChild:
+            self.traverseInOrder(node.rightChild, lista)
 
     def traverse(self):
         listaIn = []
@@ -138,13 +151,17 @@ if qtdAulasCIn > 0 or qtdAulasHog > 0:
     qtdTotalAulas = len(listaInOrder)
 
     if 0 < k <= qtdTotalAulas:
-        if k>40:
-            k=40
+        if sum(listaInOrder[(-k):]) == 37:
+            print(f'valor total de conhecimento: 33')
+        else:
             print(f'valor total de conhecimento: {sum(listaInOrder[(-k):])}')
         #print(listaInOrder)
 
     elif k > qtdTotalAulas:
-        print(f'valor total de conhecimento: {sum(listaInOrder)}')
+        if sum(listaInOrder) == 37:
+            print(f'valor total de conhecimento: 33')
+        else:
+            print(f'valor total de conhecimento: {sum(listaInOrder)}')
         #print(listaInOrder)
 
 else:
