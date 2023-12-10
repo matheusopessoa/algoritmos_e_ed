@@ -10,12 +10,8 @@ class BinaryTree:
     def __init__(self):
         self.root = None
 
-    def search(self, key):
-        level_before = self._search(self.root, key, 0)
-        return level_before
-
-    def _search(self, root, key, level):
-        if root.key:
+    def _search(self, root, key, level): #serve para saber o level_before de um node que foi busccado
+        if root.key: 
 
             if root.key == key:
                 return root, level
@@ -25,14 +21,16 @@ class BinaryTree:
             else:
                 root.right, level_before = self._search(root.right, key, level + 1)
                 return root, level_before
-        return False, False
+        
+        return False, False 
 
-    def find_node(self, key, node): #apenas verifica se a bst contem o node
+    def find_node(self, key, node): #como tem o and que verifice se existe nó filho no lado desejado,
+                                    #é impossivel buscar nó inexistente; -retorna True ou None-
         if key < node.key and node.left:
             return self.find_node(key, node.left)
-        if key > node.key and node.right:
+        elif key > node.key and node.right:
             return self.find_node(key, node.right)
-        if key == node.key:
+        elif key == node.key: 
             return True
 
     def insert(self, key):
@@ -47,25 +45,22 @@ class BinaryTree:
             root.right = self._insert(root.right, key, level + 1)
         return root
 
-    def move_to_root(self, key, action):
-
+    def move_to_root(self, key, action): #A raíz que ele recebe é a do INPUT!
+                                         #Verifica existencia/nível e faz os prints
         if self.find_node(key, self.root):
-            found_node, level_before = self._search(self.root, key, 0)
-            self.root = self._move_to_root(self.root, key, level_before, action)
+            level_before = self._search(self.root, key, 0) 
+            self.root = self._move_to_root(self.root, key, action) 
             print(f'{level_before}')
         else:
             print('-1')
 
-    def _move_to_root(self, root, key, level, action):
-        if root is None or root.key == key:
-            return root
-
+    def _move_to_root(self, root, key, action): #literalmente apenas move pro topo (mantendo a BT)
         if key < root.key:
-            root.left = self._move_to_root(root.left, key, level + 1, action)
+            root.left = self._move_to_root(root.left, key + 1, action)
             if action == 'SCH':  # so faz a rotacao se for o caso de uma busca
                 root = self.rotate_right(root)
         else:
-            root.right = self._move_to_root(root.right, key, level + 1, action)
+            root.right = self._move_to_root(root.right, key + 1, action)
             if action == 'SCH':  # so faz a rotacao se for o caso de uma busca
                 root = self.rotate_left(root)
         return root
@@ -100,10 +95,10 @@ class BinaryTree:
 
         if operation == 'ADD':
             self.insert(number_int)
-            self.move_to_root(number_int,
-                              operation)  # nesse caso, operation = 'ADD', move to root vai apenas printar o nivel
+            self.move_to_root(number_int, operation)  # nesse caso, operation = 'ADD', move to root vai
+                                                      # apenas printar o nivel
         elif operation == 'SCH':
-            self.move_to_root(number_int, operation)  # printa nivel e faz a rotacao
+            self.move_to_root(number_int, operation)  # printa nivel e faz as rotacoes e manda pra raiz
 
 
 bst = BinaryTree()
@@ -115,3 +110,4 @@ while command != '':
     except:
         break
 
+    

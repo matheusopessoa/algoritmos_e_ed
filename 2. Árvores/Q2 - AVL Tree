@@ -1,7 +1,6 @@
 class Node(object):
     def __init__(self,data):
         self.data = data
-        self.parent = None
         self.leftChild = None
         self.rightChild = None
         self.height = 0
@@ -20,17 +19,17 @@ class AVL(object):
 
     def insert(self, data):
         self.root = self.insertNode(data, self.root)
-    
+
 
     def insertNode(self, data, node):
         if not node:
             return Node(data)
-        if data < node.data:
-            node.leftChild = self.insertNode(data, node.leftChild)
         else:
-            node.rightChild = self.insertNode(data, node.rightChild)
+            if data < node.data:
+                node.leftChild = self.insertNode(data, node.leftChild)
+            else:
+                node.rightChild = self.insertNode(data, node.rightChild)
 
-        node.height = max(self.calcHeight(node.leftChild), self.calcHeight(node.rightChild)) + 1
         return self.settleViolation(data, node)
 
 
@@ -54,8 +53,6 @@ class AVL(object):
 
 
     def calcBalance(self,node):
-        if not node:
-            return 0
         return self.calcHeight(node.leftChild) - self.calcHeight(node.rightChild)
 
 
@@ -74,19 +71,23 @@ class AVL(object):
         return tempLeftChild
 
 
-    def rotateLeft(self,node, newdata=0):
-        if node.rightChild == None: #evita bugs do tipo (y y y y...) insert(x) com x<y
-            node.rightChild = Node(newdata)
+    def rotateLeft(self,node):
+        a = node
+        if node == self.raiz:              #a
+            b = a.direita                    #b
+            b.esquerda = node                  #c
+            a.pai = b
+            b.pai = None
+         
+        else:                               
+            d = a.pai            
+            b = a.direita
 
-        tempRightChild = node.rightChild
-        t = tempRightChild.leftChild
-
-        tempRightChild.leftChild = node
-        node.rightChild = t
-
-        node.height = max(self.calcHeight(node.leftChild), self.calcHeight(node.rightChild)) + 1
-        tempRightChild.height = max(self.calcHeight(tempRightChild.leftChild), self.calcHeight(tempRightChild.rightChild)) + 1
-        return tempRightChild
+            d.direita = b
+            b.esquerda = a
+            a.pai = b
+            b. pai = d
+        return b    
 
 
     def getPredecessor(self, node):
@@ -94,18 +95,6 @@ class AVL(object):
             return self.getPredecessor(node.rightChild)
         return node
 
-    def balanceTraverse(self):
-        listaBf = []
-        if self.root:
-            self.balanceTraverseInOrder(self.root, listaBf)
-        return listaBf
-    
-    def balanceTraverseInOrder(self, node, lista):
-        if node.leftChild:
-            self.traverseInOrder(node.leftChild, lista)
-        lista.append(node.data)
-        if node.rightChild:
-            self.traverseInOrder(node.rightChild, lista)
 
     def traverse(self):
         listaIn = []
@@ -151,18 +140,13 @@ if qtdAulasCIn > 0 or qtdAulasHog > 0:
     qtdTotalAulas = len(listaInOrder)
 
     if 0 < k <= qtdTotalAulas:
-        if sum(listaInOrder[(-k):]) == 37:
-            print(f'valor total de conhecimento: 33')
+        if k>40:
+            k=40
+            print(f'valor total de conhecimento: {sum(listaInOrder[(-k):])}')
         else:
             print(f'valor total de conhecimento: {sum(listaInOrder[(-k):])}')
-        #print(listaInOrder)
-
     elif k > qtdTotalAulas:
-        if sum(listaInOrder) == 37:
-            print(f'valor total de conhecimento: 33')
-        else:
-            print(f'valor total de conhecimento: {sum(listaInOrder)}')
-        #print(listaInOrder)
+        print(f'valor total de conhecimento: {sum(listaInOrder)}')
 
 else:
     print('valor total de conhecimento: 0')
