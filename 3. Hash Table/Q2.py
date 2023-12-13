@@ -1,43 +1,50 @@
 class Node:
-    def __init__(self, nome):
+    def __init__(self, nome, tamanho_grupo):
         self.nome = nome
+        self.tamanho_grupo = tamanho_grupo
         self.proximo = None
 
 class TabelaHash:
     def __init__(self):
-        self.tabela = {}
+        self.inicio = None
 
     def adicionar_pessoa(self, nome, tamanho_grupo):
-        if tamanho_grupo not in self.tabela:
-            self.tabela[tamanho_grupo] = Node(nome)
-        else:
-            no = Node(nome)
-            atual = self.tabela[tamanho_grupo]
+        novo_no = Node(nome, tamanho_grupo)
 
-            if nome < atual.nome:
-                no.proximo = atual
-                self.tabela[tamanho_grupo] = no
-            else:
-                while atual.proximo and nome > atual.proximo.nome:
-                    atual = atual.proximo
-                no.proximo = atual.proximo
-                atual.proximo = no
+        if not self.inicio:
+            self.inicio = novo_no
+            return
+
+        atual = self.inicio
+        anterior = None
+
+        while atual and (tamanho_grupo > atual.tamanho_grupo or (tamanho_grupo == atual.tamanho_grupo and nome >= atual.nome)):
+            anterior = atual
+            atual = atual.proximo
+
+        if not anterior:
+            novo_no.proximo = self.inicio
+            self.inicio = novo_no
+        else:
+            anterior.proximo = novo_no
+            novo_no.proximo = atual
 
     def obter_grupos(self):
         resultado = []
-        for tamanho_grupo in sorted(self.tabela.keys()):
-            atual = self.tabela[tamanho_grupo]
-            while atual:
-                grupo = [atual.nome]
-                for _ in range(tamanho_grupo - 1):
-                    if atual.proximo:
-                        atual = atual.proximo
-                        grupo.append(atual.nome)
-                resultado.append(grupo)
+        atual = self.inicio
+
+        while atual:
+            grupo = [atual.nome]
+            for _ in range(atual.tamanho_grupo - 1):
                 if atual.proximo:
                     atual = atual.proximo
-                else:
-                    break
+                    grupo.append(atual.nome)
+            resultado.append(grupo)
+            if atual.proximo:
+                atual = atual.proximo
+            else:
+                break
+
         return resultado
 
 def formar_grupos():
@@ -55,8 +62,7 @@ def formar_grupos():
 
     for linha in linhas_entrada:
         nome, tamanho_grupo = linha.split()
-        tamanho_grupo = int(tamanho_grupo)
-        tabela_hash.adicionar_pessoa(nome, tamanho_grupo)
+        tabela_hash.adicionar_pessoa(nome, int(tamanho_grupo))
 
     grupos = tabela_hash.obter_grupos()
     return grupos
