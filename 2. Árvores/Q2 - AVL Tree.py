@@ -71,23 +71,19 @@ class AVL(object):
         return tempLeftChild
 
 
-    def rotateLeft(self,node):
-        a = node
-        if node == self.raiz:              #a
-            b = a.direita                    #b
-            b.esquerda = node                  #c
-            a.pai = b
-            b.pai = None
-         
-        else:                               
-            d = a.pai            
-            b = a.direita
+    def rotateLeft(self,node, newdata=0):
+        if node.rightChild == None: #evita bugs do tipo (y y y y...) insert(x) com x<y
+            node.rightChild = Node(newdata)
 
-            d.direita = b
-            b.esquerda = a
-            a.pai = b
-            b. pai = d
-        return b    
+        tempRightChild = node.rightChild
+        t = tempRightChild.leftChild
+
+        tempRightChild.leftChild = node
+        node.rightChild = t
+
+        node.height = max(self.calcHeight(node.leftChild), self.calcHeight(node.rightChild)) + 1
+        tempRightChild.height = max(self.calcHeight(tempRightChild.leftChild), self.calcHeight(tempRightChild.rightChild)) + 1
+        return tempRightChild
 
 
     def getPredecessor(self, node):
